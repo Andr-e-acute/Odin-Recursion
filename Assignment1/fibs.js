@@ -28,3 +28,21 @@ console.log(fibs(8));
 console.time("fibs20");
 console.log(fibs(20));
 console.timeEnd("fibs20");
+function fibRec(num, fibSeq = [0, 1]) {
+  if (fibSeq.length >= num) {
+    return fibSeq;
+  }
+  return fibRec(num, [
+    ...fibSeq,
+    fibSeq[fibSeq.length - 1] + fibSeq[fibSeq.length - 2],
+  ]);
+}
+
+console.log(fibRec(2));
+console.log(fibRec(1));
+console.log(fibRec(0));
+console.log(fibRec(-1));
+console.log(fibRec(8));
+console.time("fibsRec20");
+console.log(fibRec(20));
+console.timeEnd("fibsRec20");
