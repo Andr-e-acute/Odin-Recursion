@@ -7,28 +7,20 @@
 //  and can actually be delegated to someone else (e.g. that same function!).
 
 function mergeSort(arr) {
-  //   console.log("mergesort parameter :" + arr);
   //base case single value return this value as Array
-
   if (arr.length == 1) {
-    // console.log("baseCase with:" + arr);
     return arr;
   }
   //  get halfIndex
   const middle = Math.floor(arr.length / 2);
-
   // split the array in half
   const leftArr = arr.splice(0, middle);
-  const rightArr = arr;
 
-  // 2*mergeSort each half
-
-  return merge(mergeSort(leftArr), mergeSort(rightArr));
+  return merge(mergeSort(leftArr), mergeSort(arr));
+  return recursiveMerge(mergeSort(leftArr), mergeSort(arr));
 }
 
 function merge(leftArr, rightArr) {
-  // can this be solved with recursion?(try for practice)
-
   // empty tempArr
   let tempArr = [];
   let lIndex = 0;
@@ -46,21 +38,62 @@ function merge(leftArr, rightArr) {
   }
 
   // if one of the array is empty concat the other one
-  while (lIndex < leftArr.length) {
-    tempArr.push(leftArr[lIndex]);
-    lIndex++;
+  if (lIndex < leftArr.length) {
+    return tempArr.concat(leftArr.slice(lIndex, leftArr.length));
   }
-  while (rIndex < rightArr.length) {
-    tempArr.push(rightArr[rIndex]);
-    rIndex++;
+  if (rIndex < rightArr.length) {
+    return tempArr.concat(rightArr.slice(rIndex, rightArr.length));
   }
 
-  // return whole array
   return tempArr;
 }
 
 // An input of
+console.time("loopSort");
 console.log(mergeSort([3, 2, 1, 13, 8, 5, 0, 1]));
 // should return [0, 1, 1, 2, 3, 5, 8, 13],
 console.log(mergeSort([105, 79, 100, 110]));
+console.timeEnd("loopSort");
 // should return [79, 100, 105, 110].
+// =-------------------------------------------------
+// it is practical the same as the first one it only uses recursiveMerge()
+function mergeRecSort(arr) {
+  //base case single value return this value as Array
+  if (arr.length == 1) {
+    return arr;
+  }
+  //  get halfIndex
+  const middle = Math.floor(arr.length / 2);
+  // split the array in half
+  const leftArr = arr.splice(0, middle);
+
+  return recursiveMerge(mergeRecSort(leftArr), mergeRecSort(arr));
+}
+
+function recursiveMerge(leftArr, rightArr, tempArr = []) {
+  // base case would be one of them empty
+  // concat the other one and return
+
+  if (leftArr.length == 0) {
+    return tempArr.concat(rightArr);
+  }
+  if (rightArr.length == 0) {
+    return tempArr.concat(leftArr);
+  }
+  if (leftArr[0] < rightArr[0]) {
+    tempArr.push(leftArr.shift());
+    return recursiveMerge(leftArr, rightArr, tempArr);
+  } else {
+    tempArr.push(rightArr.shift(0));
+    return recursiveMerge(leftArr, rightArr, tempArr);
+  }
+}
+// An input of
+console.time("recMerge");
+console.log(mergeRecSort([3, 2, 1, 13, 8, 5, 0, 1]));
+// should return [0, 1, 1, 2, 3, 5, 8, 13],
+console.log(mergeRecSort([105, 79, 100, 110]));
+// should return [79, 100, 105, 110].
+console.timeEnd("recMerge");
+// console.log(merge([1, 6, 7, 9], [2, 3, 4]));
+// console.log(recursiveMerge([1, 6, 7, 9], [2, 3, 4]));
